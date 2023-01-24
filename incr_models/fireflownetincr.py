@@ -33,9 +33,9 @@ class FireFlowNetIncr(nn.Module):
         # forward pass
         x = self.E1.forward_refresh_reservoirs(x)
         x = self.E2.forward_refresh_reservoirs(x)
-        x, _ = self.R1.forward_refresh_reservoirs(x)
+        x = self.R1.forward_refresh_reservoirs(x)
         x = self.E3.forward_refresh_reservoirs(x)
-        x, _ = self.R2.forward_refresh_reservoirs(x)
+        x = self.R2.forward_refresh_reservoirs(x)
         flow = self.pred.forward_refresh_reservoirs(x)
 
         # # mask flow

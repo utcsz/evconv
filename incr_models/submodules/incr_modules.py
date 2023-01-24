@@ -158,37 +158,12 @@ class nnConvIncr(nn.Conv2d):
         nn.Conv2d.load_state_dict(self, state_dict, strict=strict)
 
     def forward(self, x_incr):
-        # print('x_incr: ', x_incr.shape)
-        # x_incr = self.kf(x_incr)
-        # print_sparsity(x_incr[0], "conv: {}".format(self.weight.shape[2]) )
-        # if self.stride[0] == 1:
-        #     print(x_incr[0].shape, [self.in_channels, self.out_channels],self.kernel_size)
-        
-        # count_ops(x_incr[0], self.kernel_size[0])
-        
-        # if x_incr[0].is_contiguous():
-        #     raise AssertionError('received non NHWC tensor')
-        if True or self.padding[0] != (self.conv2d_weights.shape[1] - 1 ) // 2:
-            # fallback
-            out = F.conv2d(x_incr[0], self.weight, bias=None, padding=self.padding, stride=self.stride)
-            return [out, None]
-        return conv2d_from_module(x_incr, self.conv2d_weights, stride=self.stride, padding=self.padding)
+        x_incr = self.kf(x_incr)
+        return conv2d_from_module(x_incr, self.weight, stride=self.stride, padding=self.padding)
 
 
     def forward_refresh_reservoirs(self, x):
-
-        # out_H = int((x.shape[2] + 2*self.padding[0] - self.conv2d_weights.shape[1] ) // self.stride[0] + 1)
-        # out_W = int((x.shape[3] + 2*self.padding[1] - self.conv2d_weights.shape[2] ) // self.stride[1] + 1)
-        # out_C = self.conv2d_weights.shape[3]
-        # batches = x.shape[0]
-        # output_= torch.empty((batches, out_C, out_H, out_W), dtype=torch.float, device='cuda')
-        # return output_
-        # count_ops(x)
-
-        # print_sparsity([x, None], "conv: {}".format(self.weight.shape[2]) )
         x = self.kf.forward_refresh_reservoirs(x)
-        # print_sparsity(x, "conv: {}".format(self.weight.shape[2]) )
-
         return super().forward(x)
 
 

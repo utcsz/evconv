@@ -14,7 +14,8 @@ void activation_increment_cuda_wrapper(
 // conv wrapper
 void conv_cuda_wrapper(
     torch::Tensor const &in_incr,
-    torch::Tensor const &mask,
+    torch::Tensor const &mask_load,
+    torch::Tensor const &mask_compute,
     torch::Tensor const &filter,
     torch::Tensor &out_incr,  // expect a zero tensor
     int k

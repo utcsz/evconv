@@ -25,19 +25,22 @@ void activation_increment(
 
 void conv_template(
     torch::Tensor const &x_incr,
-    torch::Tensor const &mask,
+    torch::Tensor const &mask_load,
+    torch::Tensor const &mask_compute,
     torch::Tensor const &filter,
     torch::Tensor &out_incr,
     int filter_size
 ){
     CHECK_CUDA(x_incr);   //NOT CONTIGUOUS
-    CHECK_CUDA(mask);   // contiguous;
+    CHECK_CUDA(mask_load);   // contiguous;
+    CHECK_CUDA(mask_compute);   // contiguous;
     CHECK_INPUT(filter);   // contiguous;
     CHECK_CUDA(out_incr); // not contiguous
 
     conv_cuda_wrapper(
       x_incr,
-      mask,
+      mask_load,
+      mask_compute,
       filter,
       out_incr,
       filter_size

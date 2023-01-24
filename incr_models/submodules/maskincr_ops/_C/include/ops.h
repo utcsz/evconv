@@ -14,7 +14,8 @@ void activation_increment(
 
 void conv_template(
     torch::Tensor const &x_incr,
-    torch::Tensor const &mask,
+    torch::Tensor const &mask_load,
+    torch::Tensor const &mask_compute,
     torch::Tensor const &filter,
     torch::Tensor &out_incr,
     int filter_size
