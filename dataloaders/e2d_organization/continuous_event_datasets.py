@@ -74,8 +74,8 @@ class ContinuousEventsRawDataset(EventDataset):
 #        print(idx_start, idx_end)
         return events_raw[idx_start:idx_end], self.initial_stamp + timestamp_start
 
-class ContinuousEventsDataset(ContinuousEventsRawDataset):
 
+class ContinuousEventsDataset(ContinuousEventsRawDataset):
     def __init__(self, base_folder, event_folder, width, height, start_time=0, stop_time=0, transform=None, normalize=False, evframe_type='voxelgrid', window_size = 0.05, time_shift=0.001, num_bins=5, delta=0.):
         super().__init__(base_folder, event_folder, start_time, stop_time, transform, normalize, window_size, time_shift, delta=delta)
         self.width = width

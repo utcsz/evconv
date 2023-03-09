@@ -117,30 +117,6 @@ class nnLinearIncr(nn.Linear):
 
 
 #linear module
-class nnConvIncrBase(nn.Conv2d):
-
-    # def __init__(self,
-    #              in_channels: int,
-    #              out_channels: int,
-    #              kernel_size: Tuple[int, ...],
-    #              stride: Tuple[int, ...]=1,
-    #              padding: Tuple[int, ...]=0,
-    #              bias=None):
-    #     nn.Conv2d.__init__(self, in_channels, out_channels, kernel_size, stride, padding, bias)
-        # self.conv2d_weights = pf.convert_filter_out_channels_last(self.conv2d.weight).cuda()
-
-
-    def forward(self, x_incr):
-        # print('x_incr: ', x_incr.shape)
-        # out = F.conv2d(x_incr[0], self.weight, bias=None, padding=self.padding, stride=self.stride)
-        # return out, torch.ones_like(out, dtype=bool)
-        return conv2d_from_module(x_incr, self.conv2d_weights)
-
-    def forward_refresh_reservoirs(self, x):
-        return super().forward(x)
-
-
-#linear module
 class nnConvIncr(nn.Conv2d):
 
     def __init__(self,
@@ -158,12 +134,14 @@ class nnConvIncr(nn.Conv2d):
         nn.Conv2d.load_state_dict(self, state_dict, strict=strict)
 
     def forward(self, x_incr):
-        x_incr = self.kf(x_incr)
-        return conv2d_from_module(x_incr, self.weight, stride=self.stride, padding=self.padding)
+        # x_incr = self.kf(x_incr)
+        out = conv2d_from_module(x_incr, self.weight, stride=self.stride, padding=self.padding)
+
+        return out
 
 
     def forward_refresh_reservoirs(self, x):
-        x = self.kf.forward_refresh_reservoirs(x)
+        # x = self.kf.forward_refresh_reservoirs(x)
         return super().forward(x)
 
 
@@ -238,5 +216,8 @@ class nnSigmoidIncr(nnReservedActivation):
 class nnTanhIncr(nnReservedActivation):
     def __init__(self):
         nnReservedActivation.__init__(self, torch.tanh)
+
+
+
 
 

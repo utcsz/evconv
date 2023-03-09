@@ -11,7 +11,7 @@ def activation_incr(x, input_incr):
 
 
 # filter dimensions: [cout, kx, ky, cin]
-def functional_conv_module(x_incr, conv_weights, mask_load=None, mask_compute=None, stride=(1,1), padding=(1,1), fallback=False):   
+def functional_conv_module(x_incr, conv_weights, mask_load=None, mask_compute=None, stride=(1,1), padding=(1,1), force_fallback=True):
     batch = x_incr.shape[0]
     out_C = conv_weights.shape[0]
     out_H = int((x_incr.shape[2] + 2*padding[0] - conv_weights.shape[2] ) // stride[0] + 1)
@@ -24,7 +24,8 @@ def functional_conv_module(x_incr, conv_weights, mask_load=None, mask_compute=No
         # 'padding': padding[0],
         'stride': stride[0],
     }
-    if fallback or conv_config in conv2d_config:
+   
+    if not force_fallback and conv_config in conv2d_config:
         x_padded = F.pad(x_incr, padding, mode='constant', value=0).to(memory_format=torch.channels_last)
         if mask_compute == None:
             mask_compute = F.max_pool2d(x_padded, kernel_size=filter_size, stride=stride, padding=0, return_indices=False, ceil_mode=False).to(memory_format=torch.channels_last).to(dtype=torch.int)
@@ -36,9 +37,9 @@ def functional_conv_module(x_incr, conv_weights, mask_load=None, mask_compute=No
         conv_template(x_padded, mask_load, mask_compute, conv_weights, output_,filter_size)
         return [output_, None]
     else:
-        print('fallback')
-        print(conv_config)
-        output_ = F.conv2d(x_incr[0], conv_weights, bias=None, padding=padding, stride=stride)
+        # print('fallback')
+        # print(conv_config)
+        output_ = F.conv2d(x_incr, conv_weights, bias=None, padding=padding, stride=stride)
         return [output_, None]
 
 

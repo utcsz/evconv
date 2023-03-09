@@ -55,9 +55,9 @@ class FireFlowNetIncr(nn.Module):
         # forward pass
         x_incr = self.E1(x_incr)
         x_incr = self.E2(x_incr)
-        x_incr,_ = self.R1(x_incr)
+        x_incr = self.R1(x_incr)
         x_incr = self.E3(x_incr)
-        x_incr,_ = self.R2(x_incr)
+        x_incr = self.R2(x_incr)
         flow = self.pred(x_incr)
 
         # # mask flow

@@ -58,7 +58,6 @@ class DenseObjectDet(nn.Module):
                 nn.ReLU(),
             )
 
-
     def forward(self, x):
         x = self.conv_layers(x)
         x = torch.flatten(x, 1)

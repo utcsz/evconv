@@ -74,7 +74,7 @@ def get_preprocessor():
         output_folder=None
     event_preprocessor = EventPreprocessor(options)
     pad = nn.ReflectionPad2d((3, 3, 2, 2))
-    return lambda data: [pad(event_preprocessor(data)).to('cuda'), None]#, memory_format=memory_format)
+    return lambda data: pad(event_preprocessor(data)).to('cuda')#, memory_format=memory_format)
 
 
 preprocess = get_preprocessor()    

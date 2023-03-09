@@ -27,6 +27,7 @@ class ConvLayerIncr(nn.Module):
 
     # fully connected implementation
     def forward(self, x_incr: Masked) -> Masked:
+        # print(x_incr)
         out_incr = self.conv2d(x_incr)
         # out_incr = self.kf(out_incr)
         if self.norm == ['BN', 'IN']:
@@ -94,7 +95,7 @@ class ConvLSTMIncr(nn.Module):
 
         prev_h_incr, prev_c_incr = prev_state_incr
 
-        stacked_inputs_incr = torch.cat((input_incr[0], prev_h_incr[0]), 1), None
+        stacked_inputs_incr = [torch.cat((input_incr[0], prev_h_incr[0]), 1), None]
         gates_incr = self.Gates(stacked_inputs_incr)
 
         in_gate, remember_gate, out_gate, cell_gate = gates_incr[0].chunk(4, 1)
@@ -406,7 +407,6 @@ class UNetRecurrentIncr(BaseUNetIncr):
         # print_sparsity(x_incr[0], "before convhead")
         x_incr = self.head(x_incr)
         head = x_incr
-        
         # print_sparsity(x_incr[0], "after convhead")
 
         if prev_states_incr is None:
@@ -437,7 +437,6 @@ class UNetRecurrentIncr(BaseUNetIncr):
         pred_incr = self.activation(pred_incr)
 
         # print_sparsity(pred_incr[0], "final")
-
         return pred_incr, states_incr
 
 
